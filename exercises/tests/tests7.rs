@@ -34,8 +34,6 @@
 // Execute `rustlings hint tests7` or use the `hint` watch subcommand for a
 // hint.
 
-// I AM NOT DONE
-
 fn main() {}
 
 #[cfg(test)]
@@ -48,8 +46,19 @@ mod tests {
             .duration_since(std::time::UNIX_EPOCH)
             .unwrap()
             .as_secs();
-        let s = std::env::var("TEST_FOO").unwrap();
-        let e: u64 = s.parse().unwrap();
-        assert!(timestamp >= e && timestamp < e + 10);
+        let s = match std::env::var("TEST_FOO") {
+            Ok(val) => val,
+            Err(_e) => panic!("Env variable TEST_FOO is not set"),
+        };
+        let e: u64 = match s.parse() {
+            Ok(val) => val,
+            Err(_e) => panic!("Invalid timestamp specified in TEST_FOO"),
+        };
+        assert!(
+            timestamp >= e && timestamp < e + 10,
+            "Current timestamp: {}, Expected timestamp: {}",
+            timestamp,
+            e
+        );
     }
 }
